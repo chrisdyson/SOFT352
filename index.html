@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+<script type="text/javascript" src="scripts.js"></script>
 <script>
     (function(i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
@@ -49,10 +50,10 @@
             </div>
 
             <!-- Right-sided navbar links -->
-            <div class="w3-right w3-hide-small">
+            <div class="w3-right w3-hide-small" id="navBar">
                 <a onclick="$('html, body').animate({ scrollTop: $('#board').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
                 <a onclick="$('html, body').animate({ scrollTop: $('#chat').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
-                <a onclick="$('html, body').animate({ scrollTop: $('#times').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
+                <a id="timesheetNav" onclick="$('html, body').animate({ scrollTop: $('#times').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
                 <a class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
             </div>
 
@@ -64,15 +65,42 @@
         <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16"><i class="fa fa-close w3-large"></i> Close</a>
         <a onclick="$('html, body').animate({ scrollTop: $('#board').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
         <a onclick="$('html, body').animate({ scrollTop: $('#chat').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
-        <a onclick="$('html, body').animate({ scrollTop: $('#times').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
+        <a id="mobTimesheetNav" onclick="$('html, body').animate({ scrollTop: $('#times').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
         <a onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
     </nav>
 
-    <!-- Header with full-height image -->
-    <header class="bgimg-1 w3-display-container" id="home" style="-moz-user-select: none;-khtml-user-select: none;-webkit-user-select: none;user-select: none;cursor:default;">
+    <!-- Login section -->
+    <div class="bgimg-1 w3-container w3-dark-grey w3-center" style="padding:128px 16px" id="login">
+        <h3 class="w3-center">Login</h3>
+        
+            
+            
+            
 
-    </header>
+                <div class="w3-container w3-center w3-white w3-round-large" style="width:400px;padding:25px;margin: 0 auto;position: relative">
+                    
+                    <b>Username</b> <input class="w3-input w3-center" type="text"><br><br>
+                    <b>Password</b> <input class="w3-input w3-center" type="password"><br><br>
 
+                    <button class="w3-button w3-light-grey">Login</button>
+                </div>
+
+        
+            
+            
+            
+            
+            
+        
+    </div>
+
+    <!-- Home section -->
+    <div class="w3-container w3-white" style="padding:128px 16px" id="home">
+        <h3 class="w3-center">Home</h3>
+        <div class="w3-container" style="width:95%;margin: 0 auto;">
+
+        </div>
+    </div>
 
     <!-- Message Board section -->
     <div class="w3-container w3-light-grey" style="padding:128px 16px" id="board">
@@ -81,6 +109,7 @@
 
         </div>
     </div>
+
     <!-- Live Chat section -->
     <div class="w3-container w3-dark-grey" style="padding:128px 16px" id="chat">
         <h3 class="w3-center">Live Chat</h3>
@@ -88,6 +117,7 @@
 
         </div>
     </div>
+
     <!-- Upload Timesheet section -->
     <div class="w3-container w3-light-grey" style="padding:128px 16px" id="times">
         <h3 class="w3-center">Upload Timesheet</h3>
@@ -96,131 +126,9 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="w3-center w3-black w3-padding-64">
-        <button onclick="$('html, body').animate({ scrollTop: $('#home').offset().top }, 1000);" class="w3-button w3-light-grey">
-            <i class="fa fa-arrow-up w3-margin-right"></i>To the top
-        </button>
-    </footer>
 
 
     <script>
-        var slideIndex = 1;
-        showDivs(slideIndex);
-
-        function plusDivs(n) {
-            showDivs(slideIndex += n);
-        }
-
-        function currentDiv(n) {
-            showDivs(slideIndex = n);
-        }
-
-        function showDivs(n) {
-            var i;
-            var x = document.getElementsByClassName("mySlides");
-            var dots = document.getElementsByClassName("galleryDots");
-            if (n > x.length) {
-                slideIndex = 1
-            }
-            if (n < 1) {
-                slideIndex = x.length
-            }
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" w3-white", "");
-            }
-            x[slideIndex - 1].style.display = "block";
-            dots[slideIndex - 1].className += " w3-white";
-        }
-
-        var slideIndexC = 1;
-        showDivsC(slideIndexC);
-
-        function plusDivsC(n) {
-            showDivsC(slideIndexC += n);
-        }
-
-        function currentDivC(n) {
-            showDivsC(slideIndexC = n);
-        }
-
-        function showDivsC(n) {
-            var i;
-            var x = document.getElementsByClassName("campingSlides");
-            var dots = document.getElementsByClassName("campingDots");
-            if (n > x.length) {
-                slideIndexC = 1
-            }
-            if (n < 1) {
-                slideIndexC = x.length
-            }
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" w3-white", "");
-            }
-            x[slideIndexC - 1].style.display = "block";
-            dots[slideIndexC - 1].className += " w3-white";
-        }
-
-        function onClick(element) {
-            document.getElementById("img01").src = element.src;
-            document.getElementById("modal01").style.display = "block";
-        }
-
-        function campingOnClick() {
-            $('#campingGallery').slideDown('slow');
-            $('html, body').animate({
-                scrollTop: $('#campingGallery').offset().top
-            }, 1000)
-
-            document.getElementById("imgC1").src = "gallery/camping1.jpg"
-            document.getElementById("imgC2").src = "gallery/camping2.jpg"
-            document.getElementById("imgC3").src = "gallery/camping3.jpg"
-            document.getElementById("imgC4").src = "gallery/camping4.jpg"
-            document.getElementById("imgC5").src = "gallery/camping5.jpg"
-            document.getElementById("imgC6").src = "gallery/camping6.jpg"
-            document.getElementById("imgC7").src = "gallery/camping7.jpg"
-            document.getElementById("imgC8").src = "gallery/camping8.jpg"
-            document.getElementById("imgC9").src = "gallery/camping9.jpg"
-            document.getElementById("campingGalleryDots").style.display = "block";
-            document.getElementById("campingGalleryArrows1").style.display = "block";
-            document.getElementById("campingGalleryArrows2").style.display = "block";
-            document.getElementById("modalCamping").style.display = "block";
-        }
-
-        function menuOnClick(element) {
-
-            var modalDiv = document.getElementById('div01');
-            var menuDiv = document.getElementById(element);
-
-            modalDiv.innerHTML = menuDiv.innerHTML;
-            var updatedText = document.createElement('style')
-            updatedText.innerHTML = "#div01 p {text-transform: lowercase;} #div01 p::first-letter {text-transform: capitalize;}";
-            modalDiv.appendChild(updatedText);
-
-            document.getElementById("modal02").style.display = "block";
-        }
-
-        function openLink(evt, animName) {
-            document.getElementById("menuHelp").style.display = "none"
-            var i, x, tablinks;
-            x = document.getElementsByClassName("menuType");
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablink");
-            for (i = 0; i < x.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" w3-white", "");
-            }
-            document.getElementById(animName).style.display = "block";
-            evt.currentTarget.className += " w3-white";
-        }
-
         // Toggle between showing and hiding the sidebar when clicking the menu icon
         var mySidebar = document.getElementById("mySidebar");
 

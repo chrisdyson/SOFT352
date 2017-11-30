@@ -1817,7 +1817,6 @@ html {
 .bgimg-1 {
     background-position: center;
     background-size: cover;
-    background-image: url(images/bgimage.jpg);
     min-height: 100%;
 }
 
@@ -1839,14 +1838,6 @@ html {
     width: 15px;
     padding: 0;
     cursor: pointer;
-}
-
-.menuType {
-    text-transform: lowercase;
-}
-
-.menuType p::first-letter {
-    text-transform: capitalize;
 }
 
 ::-webkit-scrollbar {
@@ -1891,6 +1882,9 @@ html {
     background: transparent;
 }
 
+*:focus {
+    outline: none;
+}
 <!--[if lte IE 8]>.menuType p:first-letter {
     text-transform: capitalize;
 }
