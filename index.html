@@ -45,15 +45,15 @@
 
             <!-- Left-sided name -->
             <div class="w3-left">
-                <a onclick="$('html, body').animate({ scrollTop: $('#home').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button">Workplace Portal</a>
+                <a onclick="$('html, body').animate({ scrollTop: $('#home').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-home"></i> Workplace Portal</a>
             </div>
 
             <!-- Right-sided navbar links -->
             <div class="w3-right w3-hide-small">
-                <a onclick="$('html, body').animate({ scrollTop: $('#about').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
-                <a onclick="$('html, body').animate({ scrollTop: $('#menu').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
-                <a onclick="$('html, body').animate({ scrollTop: $('#camping').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
-                <a onclick="$('html, body').animate({ scrollTop: $('#gallery').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
+                <a onclick="$('html, body').animate({ scrollTop: $('#board').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
+                <a onclick="$('html, body').animate({ scrollTop: $('#chat').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
+                <a onclick="$('html, body').animate({ scrollTop: $('#times').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
+                <a class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
             </div>
 
         </div>
@@ -62,10 +62,10 @@
     <!-- Sidebar on small screens when clicking the menu icon -->
     <nav class="w3-sidebar w3-bar-block w3-black w3-card-2 w3-animate-left w3-hide-medium w3-hide-large" style="display:none;z-index: 7" id="mySidebar">
         <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16"><i class="fa fa-close w3-large"></i> Close</a>
-        <a onclick="$('html, body').animate({ scrollTop: $('#about').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
-        <a onclick="$('html, body').animate({ scrollTop: $('#menu').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
-        <a onclick="$('html, body').animate({ scrollTop: $('#camping').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
-        <a onclick="$('html, body').animate({ scrollTop: $('#gallery').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
+        <a onclick="$('html, body').animate({ scrollTop: $('#board').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
+        <a onclick="$('html, body').animate({ scrollTop: $('#chat').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
+        <a onclick="$('html, body').animate({ scrollTop: $('#times').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-clock-o"></i> Upload Timesheet</a>
+        <a onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
     </nav>
 
     <!-- Header with full-height image -->
@@ -74,6 +74,27 @@
     </header>
 
 
+    <!-- Message Board section -->
+    <div class="w3-container w3-light-grey" style="padding:128px 16px" id="board">
+        <h3 class="w3-center">Message Board</h3>
+        <div class="w3-container" style="width:95%;margin: 0 auto;">
+
+        </div>
+    </div>
+    <!-- Live Chat section -->
+    <div class="w3-container w3-dark-grey" style="padding:128px 16px" id="chat">
+        <h3 class="w3-center">Live Chat</h3>
+        <div class="w3-container" style="width:95%;margin: 0 auto;">
+
+        </div>
+    </div>
+    <!-- Upload Timesheet section -->
+    <div class="w3-container w3-light-grey" style="padding:128px 16px" id="times">
+        <h3 class="w3-center">Upload Timesheet</h3>
+        <div class="w3-container" style="width:95%;margin: 0 auto;">
+
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="w3-center w3-black w3-padding-64">
