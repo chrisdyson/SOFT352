@@ -11,6 +11,8 @@ var server = http.createServer(function (request, response) {
         sendFileContent(response, "management.html", "text/html");
     } else if (request.url === "/") {
         sendFileContent(response, "login.html", "text/html");
+    } else if (request.url === "/?error=true") {
+        sendFileContent(response, "login.html", "text/html");
     } else if (request.url === "/login") {
         checkLogin(request, response);
     } else if (/^\/[a-zA-Z0-9\/]*.js$/.test(request.url.toString())) {
@@ -97,7 +99,7 @@ function checkLogin(request, response) {
                             connection.end();
                             response.writeHead(301, {
                                 Location: "http://" +
-                                    request.headers.host + "/"
+                                    request.headers.host + "/?error=true"
                             });
                             response.end();
                         }
