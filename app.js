@@ -10,9 +10,6 @@ app.get('/', function (req, res) {
 app.get('/w3.css', function (req, res) {
     res.sendFile(__dirname + '/w3.css');
 });
-app.get('/scripts.js', function (req, res) {
-    res.sendFile(__dirname + '/scripts.js');
-});
 app.get('/setlogin', function (req, res) {
     res.sendFile(__dirname + '/setlogin.html');
 });
@@ -28,16 +25,29 @@ app.get('/chat', function (req, res) {
 app.post('/login', function (req, res) {
     checkLogin(req, res);
 });
+app.post('/createuser', function (req, res) {
+    createUser(req, res);
+});
 
-
+var usersConnected = 0;
 io.on('connection', function (socket) {
-    console.log('a user connected');
+    //io.emit('chat message', 'A user has joined the chat');
+    usersConnected++;
+    io.emit('nums', usersConnected);
     socket.on('disconnect', function () {
-        console.log('user disconnected');
+        //io.emit('chat message', 'A user has left the chat');
+        usersConnected--;
+        io.emit('nums', usersConnected);
+    });
+    socket.on('join chat message', function (user) {
+        io.emit('chat message', '<b>' + user + '</b> has joined the chat');
+    });
+    socket.on('leave chat message', function (user) {
+        io.emit('chat message', '<b>' + user + '</b> has left the chat');
     });
     socket.on('chat message', function (msg) {
-        console.log('message: ' + msg);
         io.emit('chat message', msg);
+        io.emit('nums', usersConnected);
     });
 });
 
@@ -78,7 +88,7 @@ function checkLogin(req, res) {
 
                             } else if (userPriviledge == 1) { //user found, is manager
                                 connection.end();
-                                
+
                                 res.redirect('/setlogin?username=' + userUsername + '&priviledge=1');
 
                             } else { //error with priviledge
@@ -103,6 +113,55 @@ function checkLogin(req, res) {
                         res.writeHead(301, {
                             Location: "http://" +
                                 req.headers.host + "/"
+                        });
+                        res.end();
+                    }
+                });
+        });
+    }
+}
+
+function createUser(req, res) {
+    var userPriviledge;
+    if (req.method == 'POST') {
+        var body = '';
+        req.on('data', function (data) {
+            body += data;
+            if (body.length > 1e6)
+                req.connection.destroy();
+        });
+
+        req.on('end', function () {
+            var post = qs.parse(body);
+            var connection = mysql.createConnection({
+                host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
+                user: 'mydbusername',
+                password: 'mydbpassword'
+            });
+
+            connection.connect();
+
+            var ismanager;
+            if (post.ismanager == undefined) {
+                ismanager = 0;
+            } else {
+                ismanager = 1;
+            }
+            connection.query("INSERT INTO mydb.user (username, email, password, ismanager) VALUES (" + mysql.escape(post.username) + "," + mysql.escape(post.email) + "," + mysql.escape(post.password) + "," + ismanager + ")",
+                function (err, rows, fields) {
+                    if (!err) {
+                        connection.end();
+                        res.writeHead(301, {
+                            Location: "http://" +
+                                req.headers.host + "/manager"
+                        });
+                        res.end();
+                    } else { //error
+                        console.log('Error while performing Query.');
+                        connection.end();
+                        res.writeHead(301, {
+                            Location: "http://" +
+                                req.headers.host + "/manager?error=true"
                         });
                         res.end();
                     }
