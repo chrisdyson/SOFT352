@@ -474,6 +474,19 @@ a {
     width: 100%;
 }
 
+.w3-input-white {
+    padding: 8px;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #fff;
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    background-color: transparent;
+    color: #fff;
+}
+
 .w3-select {
     padding: 9px 0;
     width: 100%;
