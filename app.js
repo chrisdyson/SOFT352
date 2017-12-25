@@ -12,9 +12,6 @@ app.get('/', function (req, res) {
 app.get('/w3.css', function (req, res) {
     res.sendFile(__dirname + '/w3.css');
 });
-app.get('/setlogin', function (req, res) {
-    res.sendFile(__dirname + '/setlogin.html');
-});
 app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/employee.html');
 });
@@ -37,7 +34,14 @@ app.post('/sendtimesheet', function (req, res) {
         var newpath = '/home/ubuntu/timesheets/' + files.filetoupload.name;
         fs.rename(oldpath, newpath, function (err) {
             if (err) throw err;
-            res.write('Timesheet uploaded successfully!');
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+            var username = "chips";
+            res.write('<link rel="stylesheet" href="w3.css">');
+            res.write('<script>localStorage.setItem("username", "' + username + '");function uploadmore() { window.location.replace("/timesheet"); }</script>');
+            res.write('<div class="w3-center">Timesheet uploaded successfully!</div><br>');
+            res.write('<div class="w3-center"><input class="w3-center w3-button w3-ripple w3-light-grey" type="button" onclick="uploadmore()" value="Upload More"></div>');
             res.end();
         });
     });
@@ -46,14 +50,13 @@ app.get('/timesheet', function (req, res) {
     res.writeHead(200, {
         'Content-Type': 'text/html'
     });
-    res.write('<form action="sendtimesheet" method="post" enctype="multipart/form-data">');
-    res.write('<input type="file" name="filetoupload"><br>');
-    res.write('<input type="submit">');
+    res.write('<link rel="stylesheet" href="w3.css">');
+    res.write('<form class="w3-center" action="sendtimesheet" method="post" enctype="multipart/form-data">');
+    res.write('<input class="w3-center w3-button w3-dark-grey" type="file" name="filetoupload" required><br><br>');
+    res.write('<input class="w3-center w3-button w3-ripple w3-light-grey" type="submit" value="Send">');
     res.write('</form>');
     return res.end();
 });
-
-
 
 var usersConnected = 0;
 io.on('connection', function (socket) {
@@ -109,14 +112,12 @@ function checkLogin(req, res) {
                             userUsername = rows[0].username;
                             if (userPriviledge == 0) { //user found, is not manager
                                 connection.end();
-
-                                res.redirect('/setlogin?username=' + userUsername + '&priviledge=0');
-
+                                res.write('<script>localStorage.setItem("username", "' + userUsername + '");localStorage.setItem("priviledge", "' + userPriviledge + '");window.location.replace("/home");</script>');
+                                return res.end();
                             } else if (userPriviledge == 1) { //user found, is manager
                                 connection.end();
-
-                                res.redirect('/setlogin?username=' + userUsername + '&priviledge=1');
-
+                                res.write('<script>localStorage.setItem("username", "' + userUsername + '");localStorage.setItem("priviledge", "' + userPriviledge + '");window.location.replace("/manager");</script>');
+                                return res.end();
                             } else { //error with priviledge
                                 connection.end();
                                 res.writeHead(301, {
