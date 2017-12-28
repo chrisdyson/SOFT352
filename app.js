@@ -12,6 +12,9 @@ app.get('/', function (req, res) {
 app.get('/w3.css', function (req, res) {
     res.sendFile(__dirname + '/w3.css');
 });
+app.get('/timesheet.docx', function (req, res) {
+    res.sendFile(__dirname + '/Timesheet.docx');
+});
 app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/employee.html');
 });
@@ -37,12 +40,12 @@ app.post('/sendtimesheet', function (req, res) {
             res.writeHead(200, {
                 'Content-Type': 'text/html'
             });
-            var username = "chips";
             res.write('<link rel="stylesheet" href="w3.css">');
-            res.write('<script>localStorage.setItem("username", "' + username + '");function uploadmore() { window.location.replace("/timesheet"); }</script>');
+            res.write('<script>function uploadmore() { window.location.replace("/timesheet"); }</script>');
             res.write('<div class="w3-center">Timesheet uploaded successfully!</div><br>');
             res.write('<div class="w3-center"><input class="w3-center w3-button w3-ripple w3-light-grey" type="button" onclick="uploadmore()" value="Upload More"></div>');
             res.end();
+            //localStorage.setItem("username", "' + username + '");
         });
     });
 });
@@ -57,6 +60,83 @@ app.get('/timesheet', function (req, res) {
     res.write('</form>');
     return res.end();
 });
+
+
+
+
+
+
+
+
+
+app.post('/sendtimesheet', function (req, res) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        var oldpath = files.filetoupload.path;
+        var newpath = '/home/ubuntu/timesheets/' + files.filetoupload.name;
+        fs.rename(oldpath, newpath, function (err) {
+            if (err) throw err;
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+            res.write('<link rel="stylesheet" href="w3.css">');
+            res.write('<script>function uploadmore() { window.location.replace("/timesheet"); }</script>');
+            res.write('<div class="w3-center">Timesheet uploaded successfully!</div><br>');
+            res.write('<div class="w3-center"><input class="w3-center w3-button w3-ripple w3-light-grey" type="button" onclick="uploadmore()" value="Upload More"></div>');
+            res.end();
+            //localStorage.setItem("username", "' + username + '");
+        });
+    });
+});
+
+
+
+app.get('/viewmessageboard', function (req, res) {
+    var connection = mysql.createConnection({
+        host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
+        user: 'mydbusername',
+        password: 'mydbpassword'
+    });
+
+    connection.connect();
+    connection.query("SELECT * FROM mydb.messageboard",
+        function (err, rows, fields) {
+            if (!err) {
+                if (rows != '') {
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    res.write('<link rel="stylesheet" href="w3.css">');
+                    res.write('<table class="w3-table-all w3-card-4"><tr><th style="width:60%">Message</th><th style="width:20%">Posted By</th><th style="width:20%">Posted On</th></tr>');
+                    for (i = 0; i < 3; i++) {
+                        var postdate = String(rows[i].postdate).slice(0, -15);
+                        res.write('<tr><td>' + rows[i].message + '</td><td>' + rows[i].author + '</td><td>' + postdate + '</td></tr>');
+                    }
+                    res.write('</table>');
+                    res.end();
+                    connection.end();
+                } else { //error - no data
+                    console.log('Error while performing Query.');
+                    connection.end();
+                    res.write("Sorry, there was an error retrieving the message board data");
+                    res.end();
+                }
+            } else { //error
+                console.log('Error while performing Query.');
+                connection.end();
+                res.write("Sorry, there was an error retrieving the message board data");
+                res.end();
+            }
+        });
+});
+
+
+
+
+
+
+
+
 
 var usersConnected = 0;
 io.on('connection', function (socket) {
@@ -149,7 +229,6 @@ function checkLogin(req, res) {
 }
 
 function createUser(req, res) {
-    var userPriviledge;
     if (req.method == 'POST') {
         var body = '';
         req.on('data', function (data) {
