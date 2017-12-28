@@ -42,6 +42,16 @@
             $("#txtCreatePassword").addClass("w3-input");
         }
 
+        var createUserChecker = location.search.split('posterror=')[1];
+        if (createUserChecker == "true") {
+            $("#txtMessage").addClass("w3-input-red");
+            $('html, body').animate({
+                scrollTop: $('#board').offset().top
+            }, 1000);
+        } else {
+            $("#txtMessage").addClass("w3-input");
+        }
+
         var time = new Date().getHours();
         if (time >= 5 && time <= 12) {
             $('#welcome').text("Good Morning, " + localStorage.username);
@@ -52,6 +62,8 @@
         } else {
             $('#welcome').text("Good Night, " + localStorage.username);
         }
+
+        $('#hiddenusername').val(localStorage.username);
     });
 
     if (localStorage.priviledge == 0) {
@@ -60,6 +72,10 @@
         //window.location.replace("/manager");
     } else {
         window.location.replace("/");
+    }
+
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
     }
 
 </script>
@@ -115,7 +131,17 @@
     <div class="w3-container w3-light-grey" style="padding:128px 16px" id="board">
         <h3 class="w3-center">Message Board</h3>
         <div class="w3-container" style="width:95%;margin: 0 auto;">
-
+            <div class="w3-container w3-center w3-round" style="width:90%;margin: auto;">
+                <iframe style="border: none;width: 100%;" onload="resizeIframe(this)" src="/viewmessageboard"></iframe><br>
+                <form action="http://34.211.174.165/addtomessageboard" method="post">
+                    <h4 class="w3-center">Add a Message</h4>
+                    <div id="loginPageDiv" class="w3-container w3-center w3-white w3-round-large" style="padding:50px;margin: 0 auto;position: relative">
+                        <b>Message <span class="w3-text-red">*</span></b> <input id="txtMessage" class="w3-center" type="text" name="message" autocomplete="off" required><br><br>
+                        <input type="hidden" id="hiddenusername" name="username" value="">
+                        <input id="sendBtn" class="w3-center w3-button w3-ripple w3-light-grey" type="submit" value="Add">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

@@ -48,6 +48,15 @@
         window.location.replace("/");
     }
 
+    setInterval(refreshIframe, 20000); // refresh messageboard every 20 secs
+    function refreshIframe() {
+        $("#messageiframe")[0].src = $("#messageiframe")[0].src;
+    }
+
+    
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    }
 </script>
 
 <body>
@@ -102,7 +111,7 @@
         <h3 class="w3-center">Message Board</h3>
         <div class="w3-container" style="width:95%;margin: 0 auto;">
             <div class="w3-container w3-center w3-round" style="width:90%;margin: auto;">
-                <iframe style="border: none;width: 100%;height: 400px" src="/viewmessageboard"></iframe>
+                <iframe id="messageiframe" style="border: none;width: 100%;" onload="resizeIframe(this)" src="/viewmessageboard"></iframe>
             </div>
         </div>
     </div>
