@@ -64,14 +64,41 @@
         }
 
         $('#hiddenusername').val(localStorage.username);
+
+        $('#navBar a').hover(function() {
+                $("#underline").animate({
+                    "width": $(this).css("width"),
+                    "left": $(this).position().left
+                }, {
+                    duration: 300,
+                    queue: false
+                });
+            },
+            function() {
+                $("#underline").animate({
+                    "left": $(window).width()
+                }, {
+                    duration: 250,
+                    queue: false
+                });
+            });
     });
 
+    function goTo(loc) {
+        $('html, body').animate({ scrollTop: $(loc).offset().top }, 1000);
+    }
+    
     if (localStorage.priviledge == 0) {
         window.location.replace("/home");
     } else if (localStorage.priviledge == 1) {
         //window.location.replace("/manager");
     } else {
         window.location.replace("/");
+    }
+
+    setInterval(refreshIframe, 20000); // refresh messageboard every 20 secs
+    function refreshIframe() {
+        $("#messageiframe")[0].src = $("#messageiframe")[0].src;
     }
 
     function resizeIframe(obj) {
@@ -93,15 +120,16 @@
 
             <!-- Left-sided name -->
             <div class="w3-left">
-                <a onclick="$('html, body').animate({ scrollTop: $('#home').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-home"></i> Workplace Portal</a>
+                <a onclick="goTo('#home'); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-home"></i> Workplace Portal</a>
             </div>
 
             <!-- Right-sided navbar links -->
             <div class="w3-right w3-hide-small" id="navBar">
-                <a onclick="$('html, body').animate({ scrollTop: $('#board').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
-                <a onclick="$('html, body').animate({ scrollTop: $('#chat').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
-                <a onclick="$('html, body').animate({ scrollTop: $('#management').offset().top }, 1000);" class="w3-bar-item w3-button"><i class="fa fa-group"></i> Management Tools</a>
+                <a onclick="goTo('#board');" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
+                <a onclick="goTo('#chat');" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
+                <a onclick="goTo('#management');" class="w3-bar-item w3-button"><i class="fa fa-group"></i> Management Tools</a>
                 <a onclick="localStorage.removeItem('username');localStorage.removeItem('priviledge');window.location.replace('/');" class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
+                <div id="underline" style="background-color: #616161; height:3px;width:0px;position:absolute;bottom:0px;right:-50px"></div>
             </div>
 
         </div>
@@ -111,15 +139,15 @@
     <nav class="w3-sidebar w3-bar-block w3-black w3-card-2 w3-animate-left w3-hide-medium w3-hide-large" style="display:none;z-index: 7" id="mySidebar">
         <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16"><i class="fa fa-close w3-large"></i> Close</a>
         <div id="mobNavBar">
-            <a onclick="$('html, body').animate({ scrollTop: $('#board').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
-            <a onclick="$('html, body').animate({ scrollTop: $('#chat').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
-            <a onclick="$('html, body').animate({ scrollTop: $('#management').offset().top }, 1000); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-group"></i> Management Tools</a>
+            <a onclick="goTo('#board'); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-wpforms"></i> Message Board</a>
+            <a onclick="goTo('#chat'); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-comments"></i> Live Chat</a>
+            <a onclick="goTo('#management'); w3_close()" class="w3-bar-item w3-button"><i class="fa fa-group"></i> Management Tools</a>
             <a onclick="w3_close();localStorage.removeItem('username');localStorage.removeItem('priviledge');window.location.replace('/');" class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log Out</a>
         </div>
     </nav>
 
     <!-- Home section -->
-    <div class="bgimg-1 w3-container w3-white" style="padding:128px 16px" id="home">
+    <div class="w3-container w3-white" style="padding:128px 16px" id="home">
         <h3 class="w3-center">Home</h3>
         <h6 style="margin-top:-10px" class="w3-center" id="welcome"></h6>
         <div class="w3-container" style="width:95%;margin: 0 auto;">
@@ -128,11 +156,11 @@
     </div>
 
     <!-- Message Board section -->
-    <div class="w3-container w3-light-grey" style="padding:128px 16px" id="board">
+    <div class="bgimg-1 w3-container w3-light-grey" style="padding:128px 16px" id="board">
         <h3 class="w3-center">Message Board</h3>
         <div class="w3-container" style="width:95%;margin: 0 auto;">
             <div class="w3-container w3-center w3-round" style="width:90%;margin: auto;">
-                <iframe style="border: none;width: 100%;" onload="resizeIframe(this)" src="/viewmessageboard"></iframe><br>
+                <iframe id="messageiframe" style="border: none;width: 100%;" onload="resizeIframe(this)" src="/viewmessageboard"></iframe><br>
                 <form action="http://34.211.174.165/addtomessageboard" method="post">
                     <h4 class="w3-center">Add a Message</h4>
                     <div id="loginPageDiv" class="w3-container w3-center w3-white w3-round-large" style="padding:50px;margin: 0 auto;position: relative">
@@ -146,15 +174,15 @@
     </div>
 
     <!-- Live Chat section -->
-    <div class="w3-container w3-dark-grey" style="padding:128px 16px" id="chat">
+    <div class="bgimg-1 w3-container w3-dark-grey" style="padding:128px 16px" id="chat">
         <h3 class="w3-center">Live Chat</h3>
-        <div class="w3-container" style="width:95%;margin: 0 auto;">
-            <iframe style="border: none;width: 100%;height:400px" src="/chat"></iframe>
+        <div class="w3-container" style="width:90%;margin: 0 auto;">
+            <iframe style="border: none;width: 100%;height:500px" src="/chat"></iframe>
         </div>
     </div>
 
     <!-- Management section -->
-    <div class="w3-container w3-blue-grey" style="padding:128px 16px" id="management">
+    <div class="bgimg-1 w3-container w3-blue-grey" style="padding:128px 16px" id="management">
         <h3 class="w3-center">Management Tools</h3>
         <div class="w3-container" style="width:95%;margin: 0 auto;">
             <h4 class="w3-center">Create User</h4>

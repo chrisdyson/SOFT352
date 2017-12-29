@@ -9,193 +9,28 @@ var fs = require('fs');
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/login.html');
 });
+
 app.get('/w3.css', function (req, res) {
     res.sendFile(__dirname + '/w3.css');
 });
+
 app.get('/timesheet.docx', function (req, res) {
     res.sendFile(__dirname + '/Timesheet.docx');
 });
+
 app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/employee.html');
 });
+
 app.get('/manager', function (req, res) {
     res.sendFile(__dirname + '/management.html');
 });
+
 app.get('/chat', function (req, res) {
     res.sendFile(__dirname + '/chat.html');
 });
+
 app.post('/login', function (req, res) {
-    checkLogin(req, res);
-});
-app.post('/createuser', function (req, res) {
-    createUser(req, res);
-});
-app.post('/sendtimesheet', function (req, res) {
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        var oldpath = files.filetoupload.path;
-        var newpath = '/home/ubuntu/timesheets/' + files.filetoupload.name;
-        fs.rename(oldpath, newpath, function (err) {
-            if (err) throw err;
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
-            res.write('<link rel="stylesheet" href="w3.css">');
-            res.write('<script>function uploadmore() { window.location.replace("/timesheet"); }</script>');
-            res.write('<div class="w3-center">Timesheet uploaded successfully!</div><br>');
-            res.write('<div class="w3-center"><input class="w3-center w3-button w3-ripple w3-light-grey" type="button" onclick="uploadmore()" value="Upload More"></div>');
-            res.end();
-        });
-    });
-});
-app.get('/timesheet', function (req, res) {
-    res.writeHead(200, {
-        'Content-Type': 'text/html'
-    });
-    res.write('<link rel="stylesheet" href="w3.css">');
-    res.write('<form class="w3-center" action="sendtimesheet" method="post" enctype="multipart/form-data">');
-    res.write('<input class="w3-center w3-button w3-dark-grey" type="file" name="filetoupload" required><br><br>');
-    res.write('<input class="w3-center w3-button w3-ripple w3-light-grey" type="submit" value="Send">');
-    res.write('</form>');
-    return res.end();
-});
-
-
-
-
-
-
-
-
-
-app.post('/addtomessageboard', function (req, res) {
-
-    if (req.method == 'POST') {
-        var body = '';
-        req.on('data', function (data) {
-            body += data;
-            if (body.length > 1e6)
-                req.connection.destroy();
-        });
-
-        req.on('end', function () {
-            var post = qs.parse(body);
-            var connection = mysql.createConnection({
-                host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
-                user: 'mydbusername',
-                password: 'mydbpassword'
-            });
-
-            connection.connect();
-            connection.query("INSERT INTO mydb.messageboard (message, author) VALUES (" + mysql.escape(post.message) + ", " + mysql.escape(post.username) + ")",
-                function (err, rows, fields) {
-                    if (!err) {
-                        connection.end();
-                        res.writeHead(301, {
-                            Location: "http://" +
-                                req.headers.host + "/manager"
-                        });
-                        res.end();
-                    } else { //error
-                        console.log('Error while performing Query.');
-                        console.log(err);
-                        connection.end();
-                        res.writeHead(301, {
-                            Location: "http://" +
-                                req.headers.host + "/manager?posterror=true"
-                        });
-                        res.end();
-                    }
-                });
-        });
-    }
-});
-
-
-
-app.get('/viewmessageboard', function (req, res) {
-    var connection = mysql.createConnection({
-        host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
-        user: 'mydbusername',
-        password: 'mydbpassword'
-    });
-
-    connection.connect();
-
-    connection.query("SELECT * FROM(SELECT * FROM mydb.messageboard ORDER BY messageID DESC LIMIT 50) sub ORDER BY messageID DESC",
-        function (err, rows, fields) {
-            if (!err) {
-                if (rows != '') {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/html'
-                    });
-                    var numOfMessages = rows.length;
-                    var messagesToShow;
-                    if (numOfMessages <= 5) {
-                        messagesToShow = numOfMessages;
-                    } else {
-                        messagesToShow = 6;
-                    }
-                    res.write('<link rel="stylesheet" href="w3.css">');
-                    res.write('<table class="w3-table-all w3-card-4"><tr><th style="width:60%">Message</th><th style="width:20%">Posted By</th><th style="width:20%">Posted On</th></tr>');
-                    for (i = 0; i < messagesToShow; i++) {
-                        var postdate = String(rows[i].postdate).slice(0, -18);
-                        res.write('<tr><td>' + rows[i].message + '</td><td>' + rows[i].author + '</td><td>' + postdate + '</td></tr>');
-                    }
-                    res.write('</table>');
-                    res.write('<p>Showing ' + messagesToShow + ' out of ' + numOfMessages + ' messages</p>')
-                    res.end();
-                    connection.end();
-                } else { //error - no data
-                    console.log('Error while performing Query.');
-                    connection.end();
-                    res.write("Sorry, there was an error retrieving the message board data");
-                    res.end();
-                }
-            } else { //error
-                console.log('Error while performing Query.');
-                connection.end();
-                res.write("Sorry, there was an error retrieving the message board data");
-                res.end();
-            }
-        });
-});
-
-
-
-
-
-
-
-
-
-var usersConnected = 0;
-io.on('connection', function (socket) {
-    //io.emit('chat message', 'A user has joined the chat');
-    usersConnected++;
-    io.emit('nums', usersConnected);
-    socket.on('disconnect', function () {
-        //io.emit('chat message', 'A user has left the chat');
-        usersConnected--;
-        io.emit('nums', usersConnected);
-    });
-    socket.on('join chat message', function (user) {
-        io.emit('chat message', '<b>' + user + '</b> has joined the chat');
-    });
-    socket.on('leave chat message', function (user) {
-        io.emit('chat message', '<b>' + user + '</b> has left the chat');
-    });
-    socket.on('chat message', function (msg) {
-        io.emit('chat message', msg);
-        io.emit('nums', usersConnected);
-    });
-});
-
-http.listen(80, function () {
-    console.log('listening on :80');
-});
-
-function checkLogin(req, res) {
     var userPriviledge;
     if (req.method == 'POST') {
         var body = '';
@@ -214,7 +49,6 @@ function checkLogin(req, res) {
             });
 
             connection.connect();
-
             connection.query("SELECT * FROM mydb.user WHERE username = " + mysql.escape(post.username) + "AND password = " + mysql.escape(post.password),
                 function (err, rows, fields) {
                     if (!err) {
@@ -257,9 +91,9 @@ function checkLogin(req, res) {
                 });
         });
     }
-}
+});
 
-function createUser(req, res) {
+app.post('/createuser', function (req, res) {
     if (req.method == 'POST') {
         var body = '';
         req.on('data', function (data) {
@@ -275,9 +109,7 @@ function createUser(req, res) {
                 user: 'mydbusername',
                 password: 'mydbpassword'
             });
-
             connection.connect();
-
             var ismanager;
             if (post.ismanager == undefined) {
                 ismanager = 0;
@@ -305,4 +137,149 @@ function createUser(req, res) {
                 });
         });
     }
-}
+});
+
+app.post('/sendtimesheet', function (req, res) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        var oldpath = files.filetoupload.path;
+        var newpath = '/home/ubuntu/timesheets/' + files.filetoupload.name;
+        fs.rename(oldpath, newpath, function (err) {
+            if (err) throw err;
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+            res.write('<link rel="stylesheet" href="w3.css">');
+            res.write('<script>function uploadmore() { window.location.replace("/timesheet"); }</script>');
+            res.write('<div class="w3-center">Timesheet uploaded successfully!</div><br>');
+            res.write('<div class="w3-center"><input class="w3-center w3-button w3-ripple w3-light-grey" type="button" onclick="uploadmore()" value="Upload More"></div>');
+            res.end();
+        });
+    });
+});
+
+app.get('/timesheet', function (req, res) {
+    res.writeHead(200, {
+        'Content-Type': 'text/html'
+    });
+    res.write('<link rel="stylesheet" href="w3.css">');
+    res.write('<form class="w3-center" action="sendtimesheet" method="post" enctype="multipart/form-data">');
+    res.write('<input class="w3-center w3-button w3-dark-grey" type="file" name="filetoupload" required><br><br>');
+    res.write('<input class="w3-center w3-button w3-ripple w3-light-grey" type="submit" value="Upload">');
+    res.write('</form>');
+    return res.end();
+});
+
+app.post('/addtomessageboard', function (req, res) {
+    if (req.method == 'POST') {
+        var body = '';
+        req.on('data', function (data) {
+            body += data;
+            if (body.length > 1e6)
+                req.connection.destroy();
+        });
+
+        req.on('end', function () {
+            var post = qs.parse(body);
+            var connection = mysql.createConnection({
+                host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
+                user: 'mydbusername',
+                password: 'mydbpassword'
+            });
+
+            connection.connect();
+            connection.query("INSERT INTO mydb.messageboard (message, author) VALUES (" + mysql.escape(post.message) + ", " + mysql.escape(post.username) + ")",
+                function (err, rows, fields) {
+                    if (!err) {
+                        connection.end();
+                        res.writeHead(301, {
+                            Location: "http://" +
+                                req.headers.host + "/manager"
+                        });
+                        res.end();
+                    } else { //error
+                        console.log('Error while performing Query.');
+                        console.log(err);
+                        connection.end();
+                        res.writeHead(301, {
+                            Location: "http://" +
+                                req.headers.host + "/manager?posterror=true"
+                        });
+                        res.end();
+                    }
+                });
+        });
+    }
+});
+
+app.get('/viewmessageboard', function (req, res) {
+    var connection = mysql.createConnection({
+        host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
+        user: 'mydbusername',
+        password: 'mydbpassword'
+    });
+    connection.connect();
+    connection.query("SELECT * FROM(SELECT * FROM mydb.messageboard ORDER BY messageID DESC LIMIT 50) sub ORDER BY messageID DESC",
+        function (err, rows, fields) {
+            if (!err) {
+                if (rows != '') {
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    var numOfMessages = rows.length;
+                    var messagesToShow;
+                    if (numOfMessages <= 5) {
+                        messagesToShow = numOfMessages;
+                    } else {
+                        messagesToShow = 6;
+                    }
+                    res.write('<link rel="stylesheet" href="w3.css">');
+                    res.write('<table class="w3-table-all w3-card-4"><tr><th style="width:60%">Message</th><th style="width:20%">Posted By</th><th style="width:20%">Posted On</th></tr>');
+                    for (i = 0; i < messagesToShow; i++) {
+                        var postdate = String(rows[i].postdate).slice(0, -18);
+                        res.write('<tr><td>' + rows[i].message + '</td><td>' + rows[i].author + '</td><td>' + postdate + '</td></tr>');
+                    }
+                    res.write('</table>');
+                    res.write('<p>Showing ' + messagesToShow + ' out of ' + numOfMessages + ' messages</p>')
+                    res.end();
+                    connection.end();
+                } else { //error - no data
+                    console.log('Error while performing Query.');
+                    connection.end();
+                    res.write("Sorry, there was an error retrieving the message board data");
+                    res.end();
+                }
+            } else { //error
+                console.log('Error while performing Query.');
+                connection.end();
+                res.write("Sorry, there was an error retrieving the message board data");
+                res.end();
+            }
+        });
+});
+
+var usersConnected = 0;
+io.on('connection', function (socket) {
+    //io.emit('chat message', 'A user has joined the chat');
+    usersConnected++;
+    io.emit('nums', usersConnected);
+    socket.on('disconnect', function () {
+        //io.emit('chat message', 'A user has left the chat');
+        usersConnected--;
+        io.emit('nums', usersConnected);
+    });
+    socket.on('join chat message', function (user) {
+        io.emit('chat message', '<b>' + user + '</b> has joined the chat');
+    });
+    socket.on('leave chat message', function (user) {
+        io.emit('chat message', '<b>' + user + '</b> has left the chat');
+    });
+    socket.on('chat message', function (msg) {
+        io.emit('chat message', msg);
+        io.emit('nums', usersConnected);
+    });
+});
+
+http.listen(80, function () {
+    console.log('listening on :80');
+});
