@@ -60,7 +60,7 @@
                 return false;
             });
             socket.on('chat message', function(msg) {
-                $('#messages').prepend($('<p>').html(msg));
+                messageChecker(msg);
             });
             socket.on('nums', function(num) {
                 $('#users').html("Users Online: " + num);
@@ -70,6 +70,14 @@
                 socket.emit('leave chat message', localStorage.username);
             };
         });
+
+        function messageChecker(msg) {
+            if (/pay rise|fuck|shit/.test(msg)) { // Contains the unaccepted word
+                $('#messages').prepend($('<p>').html("<span class='w3-text-red'>This message was removed due to inappropriate language</span>"));
+            } else {
+                $('#messages').prepend($('<p>').html(msg));
+            }
+        }
 
     </script>
 </head>
