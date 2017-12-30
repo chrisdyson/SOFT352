@@ -143,7 +143,8 @@ app.post('/sendtimesheet', function (req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
         var oldpath = files.filetoupload.path;
-        var newpath = '/home/ubuntu/timesheets/' + files.filetoupload.name;
+        var newpath = '/home/ubuntu/timesheets/' + fields.username + '.docx';
+        //console.log();
         fs.rename(oldpath, newpath, function (err) {
             if (err) throw err;
             res.writeHead(200, {
@@ -163,8 +164,12 @@ app.get('/timesheet', function (req, res) {
         'Content-Type': 'text/html'
     });
     res.write('<link rel="stylesheet" href="w3.css">');
+    res.write('<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>');
+    res.write('<script>var currentdate = new Date(); var datetime = "" + currentdate.getDate() + "-" + (("0" + (currentdate.getMonth() + 1)).slice(-2))  + "-" + ("0" + (currentdate.getFullYear() + 1)).slice(-2) + "_" + ("0" + (currentdate.getHours() + 1)).slice(-2) + ":" + ("0" + (currentdate.getMinutes() + 1)).slice(-2) + ":" + ("0" + (currentdate.getSeconds() + 1)).slice(-2); </script>');
+    res.write('<script>$(document).ready(function() { $("#hiddenusername").val( localStorage.username + "_" + datetime) });</script>');
     res.write('<form class="w3-center" action="sendtimesheet" method="post" enctype="multipart/form-data">');
-    res.write('<input class="w3-center w3-button w3-dark-grey" type="file" name="filetoupload" required><br><br>');
+    res.write('<input class="w3-center w3-button w3-dark-grey" type="file" name="filetoupload" accept=".docx" required><br><br>');
+    res.write('<input type="hidden" id="hiddenusername" name="username" value="">');
     res.write('<input class="w3-center w3-button w3-ripple w3-light-grey" type="submit" value="Upload">');
     res.write('</form>');
     return res.end();
