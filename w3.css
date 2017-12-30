@@ -1819,6 +1819,13 @@ a {
     cursor: pointer
 }
 
+.w3-underline {
+    text-decoration: underline;
+}
+
+.w3-underline:hover {
+    text-decoration: none;
+}
 
 /* Page CSS */
 

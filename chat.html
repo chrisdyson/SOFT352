@@ -14,7 +14,7 @@
 
         #messages p {
             padding: 5px 10px;
-            background: #33bbff;
+            background: #00aaff;
             color: #f7f7f7;
             margin: 4px;
             border-radius: 5px;
@@ -75,8 +75,23 @@
             if (/pay rise|fuck|shit/.test(msg)) { // Contains the unaccepted word
                 $('#messages').prepend($('<p>').html("<span class='w3-text-red'>This message was removed due to inappropriate language</span>"));
             } else {
-                $('#messages').prepend($('<p>').html(msg));
+                $('#messages').prepend($('<p>').html(addURLStoMessage(msg)));
             }
+        }
+
+        function addURLStoMessage(msg) {
+            var urlRegex = /(https?:\/\/[^\s]+)|(www.[^\s]+)/g;
+            return msg.replace(urlRegex, function(url) {
+
+                if (/http:|https:/.test(url)) { // Contains the unaccepted word
+                    return '<a class="w3-underline" target="blank" href="' + url + '">' + url + '</a>';
+                } else {
+                    return '<a class="w3-underline" target="blank" href="http://' + url + '">' + url + '</a>';
+                }
+
+
+                //return '<a class="w3-underline" target="blank" href="' + url + '">' + url + '</a>';
+            })
         }
 
     </script>
