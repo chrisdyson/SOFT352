@@ -144,7 +144,6 @@ app.post('/sendtimesheet', function (req, res) {
     form.parse(req, function (err, fields, files) {
         var oldpath = files.filetoupload.path;
         var newpath = '/home/ubuntu/timesheets/' + fields.username + '.docx';
-        //console.log();
         fs.rename(oldpath, newpath, function (err) {
             if (err) throw err;
             res.writeHead(200, {

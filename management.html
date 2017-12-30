@@ -161,7 +161,7 @@
         <div class="w3-container" style="width:95%;margin: 0 auto;">
             <div class="w3-container w3-center w3-round" style="width:90%;margin: auto;">
                 <iframe id="messageiframe" style="border: none;width: 100%;" onload="resizeIframe(this)" src="/viewmessageboard"></iframe><br>
-                <form action="http://34.211.174.165/addtomessageboard" method="post">
+                <form action="/addtomessageboard" method="post">
                     <h4 class="w3-center">Add a Message</h4>
                     <div id="loginPageDiv" class="w3-container w3-center w3-white w3-round-large" style="padding:50px;margin: 0 auto;position: relative">
                         <b>Message <span class="w3-text-red">*</span></b> <input id="txtMessage" class="w3-center" type="text" name="message" autocomplete="off" required><br><br>
@@ -186,7 +186,7 @@
         <h3 class="w3-center">Management Tools</h3>
         <div class="w3-container" style="width:95%;margin: 0 auto;">
             <h4 class="w3-center">Create User</h4>
-            <form action="http://34.211.174.165/createuser" method="post">
+            <form action="/createuser" method="post">
                 <div id="loginPageDiv" class="w3-container w3-center w3-white w3-round-large" style="padding:50px;margin: 0 auto;position: relative">
                     <b>Username <span class="w3-text-red">*</span></b> <input id="txtCreateUsername" class="w3-center" type="text" name="username" autocomplete="off" required><br><br>
                     <b>Email</b> <input id="txtCreateEmail" class="w3-center" type="email" autocomplete="off" name="email"><br><br>
