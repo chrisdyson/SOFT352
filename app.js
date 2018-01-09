@@ -264,11 +264,9 @@ app.get('/viewmessageboard', function (req, res) {
 
 var usersConnected = 0;
 io.on('connection', function (socket) {
-    //io.emit('chat message', 'A user has joined the chat');
     usersConnected++;
     io.emit('nums', usersConnected);
     socket.on('disconnect', function () {
-        //io.emit('chat message', 'A user has left the chat');
         usersConnected--;
         io.emit('nums', usersConnected);
     });
