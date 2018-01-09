@@ -59,9 +59,11 @@
     });
 
     function goTo(loc) {
-        $('html, body').animate({ scrollTop: $(loc).offset().top }, 1000);
+        $('html, body').animate({
+            scrollTop: $(loc).offset().top
+        }, 1000);
     }
-    
+
     if (localStorage.priviledge == 0) {
         //window.location.replace("/home");
     } else if (localStorage.priviledge == 1) {
