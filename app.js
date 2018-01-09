@@ -262,6 +262,7 @@ app.get('/viewmessageboard', function (req, res) {
         });
 });
 
+
 var usersConnected = 0;
 io.on('connection', function (socket) {
     usersConnected++;
@@ -281,6 +282,7 @@ io.on('connection', function (socket) {
         io.emit('nums', usersConnected);
     });
 });
+
 
 http.listen(3000, function () {
     console.log('listening on :3000');
