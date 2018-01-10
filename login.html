@@ -50,6 +50,9 @@
     function checkFormInput() {
         if (/\d|[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/.test($('#txtLoginUsername').val())) {
             $("#txtLoginUsername").addClass("w3-input-red");
+            $("#txtLoginUsername").val("");
+            $("#txtLoginPassword").val("");
+            $("#txtLoginUsername").attr("placeholder", "Username cannot contain numbers or symbols");
             return false;
         } else {
             return true;

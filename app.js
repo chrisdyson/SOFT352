@@ -130,7 +130,48 @@ app.post('/createuser', function (req, res) {
                         connection.end();
                         res.writeHead(301, {
                             Location: "http://" +
-                                req.headers.host + "/manager?error=true"
+                                req.headers.host + "/manager?createerror=true"
+                        });
+                        res.end();
+                    }
+                });
+        });
+    }
+});
+
+app.post('/removeuser', function (req, res) {
+    if (req.method == 'POST') {
+        var body = '';
+        req.on('data', function (data) {
+            body += data;
+            if (body.length > 1e6)
+                req.connection.destroy();
+        });
+
+        req.on('end', function () {
+            var post = qs.parse(body);
+            var connection = mysql.createConnection({
+                host: 'mydbinstance.c6xj1ygvt6xb.us-west-2.rds.amazonaws.com',
+                user: 'mydbusername',
+                password: 'mydbpassword'
+            });
+            connection.connect();
+
+            connection.query("DELETE FROM mydb.user WHERE username = " + mysql.escape(post.username),
+                function (err, rows, fields) {
+                    if (!err) {
+                        connection.end();
+                        res.writeHead(301, {
+                            Location: "http://" +
+                                req.headers.host + "/manager"
+                        });
+                        res.end();
+                    } else { //error
+                        console.log('Error while performing Query.');
+                        connection.end();
+                        res.writeHead(301, {
+                            Location: "http://" +
+                                req.headers.host + "/manager?removeerror=true"
                         });
                         res.end();
                     }
